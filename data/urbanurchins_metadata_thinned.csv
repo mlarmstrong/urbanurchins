@@ -1,0 +1,184 @@
+﻿Date,Site,Latitude,Longitude,region,Dev,Site_ID,Sample_ID,Depth (m),Collector,excluded from outlier analyses
+2/27/21,"Sugaloaf Point, Orange County",33.5197,-117.76448,LA,nonurban,Sug,Sug1,intertidal,Armstrong,no
+2/27/21,"Sugaloaf Point, Orange County",33.51973,-117.76456,LA,nonurban,Sug,Sug10,intertidal,Armstrong,no
+2/27/21,"Sugaloaf Point, Orange County",33.5197,-117.76448,LA,nonurban,Sug,Sug2,intertidal,Armstrong,no
+2/27/21,"Sugaloaf Point, Orange County",33.51963,-117.76444,LA,nonurban,Sug,Sug3,intertidal,Armstrong,no
+2/27/21,"Sugaloaf Point, Orange County",33.51955,-117.76448,LA,nonurban,Sug,Sug4,intertidal,Armstrong,no
+2/27/21,"Sugaloaf Point, Orange County",33.51974,-117.76456,LA,nonurban,Sug,Sug5,intertidal,Armstrong,no
+2/27/21,"Sugaloaf Point, Orange County",33.51974,-117.76456,LA,nonurban,Sug,Sug6,intertidal,Armstrong,no
+2/27/21,"Sugaloaf Point, Orange County",33.51962,-117.76447,LA,nonurban,Sug,Sug7,intertidal,Armstrong,no
+2/27/21,"Sugaloaf Point, Orange County",33.51962,-117.76447,LA,nonurban,Sug,Sug8,intertidal,Armstrong,no
+2/27/21,"Sugaloaf Point, Orange County",33.51972,-117.76451,LA,nonurban,Sug,Sug9,intertidal,Armstrong,no
+12/29/20,"Treasure Island Park, Orange County",33.51372,-117.75829,LA,nonurban,Trp,Trp1,intertidal,Armstrong/Sutherland,no
+12/30/20,"Treasure Island Park, Orange County",33.51324,-117.75816,LA,nonurban,Trp,Trp10,intertidal,Armstrong,no
+12/29/20,"Treasure Island Park, Orange County",33.51372,-117.75829,LA,nonurban,Trp,Trp2,intertidal,Armstrong/Sutherland,no
+12/29/20,"Treasure Island Park, Orange County",33.51314,-117.75816,LA,nonurban,Trp,Trp3,intertidal,Armstrong/Sutherland,no
+12/29/20,"Treasure Island Park, Orange County",33.51314,-117.75816,LA,nonurban,Trp,Trp4,intertidal,Armstrong/Sutherland,no
+12/29/20,"Treasure Island Park, Orange County",33.51325,-117.75812,LA,nonurban,Trp,Trp5,intertidal,Armstrong/Sutherland,no
+12/29/20,"Treasure Island Park, Orange County",33.51364,-117.75826,LA,nonurban,Trp,Trp6,intertidal,Armstrong/Sutherland,no
+12/29/20,"Treasure Island Park, Orange County",33.5137,-117.75834,LA,nonurban,Trp,Trp7,intertidal,Armstrong/Sutherland,no
+12/29/20,"Treasure Island Park, Orange County",33.5137,-117.75834,LA,nonurban,Trp,Trp8,intertidal,Armstrong/Sutherland,no
+12/30/20,"Treasure Island Park, Orange County",33.51325,-117.75819,LA,nonurban,Trp,Trp9,intertidal,Armstrong/Sutherland,no
+11/17/20,"Twin Points, Laguna Beach",33.54529,-117.80068,LA,nonurban,Twp,Twp1,intertidal,Armstrong/Lee,no
+11/17/20,"Twin Points, Laguna Beach",33.54526,-117.80068,LA,nonurban,Twp,Twp10,intertidal,Armstrong/Lee,no
+11/17/20,"Twin Points, Laguna Beach",33.54535,-117.80044,LA,nonurban,Twp,Twp2,intertidal,Armstrong/Lee,no
+11/17/20,"Twin Points, Laguna Beach",33.54531,-117.80044,LA,nonurban,Twp,Twp3,intertidal,Armstrong/Lee,no
+11/17/20,"Twin Points, Laguna Beach",33.54493,-117.80065,LA,nonurban,Twp,Twp4,intertidal,Armstrong/Lee,no
+11/17/20,"Twin Points, Laguna Beach",33.54485,-117.80067,LA,nonurban,Twp,Twp5,intertidal,Armstrong/Lee,no
+11/17/20,"Twin Points, Laguna Beach",33.54503,-117.80065,LA,nonurban,Twp,Twp6,intertidal,Armstrong/Lee,no
+11/17/20,"Twin Points, Laguna Beach",33.54551,-117.80065,LA,nonurban,Twp,Twp7,intertidal,Armstrong/Lee,no
+10/9/20,Laguna Beach,33.52987,-117.78093,LA,nonurban,Lag,Lag 1,subtidal,CCGP,no
+10/9/20,Laguna Beach,33.52987,-117.78093,LA,nonurban,Lag,Lag 10,subtidal,CCGP,no
+10/9/20,Laguna Beach,33.52987,-117.78093,LA,nonurban,Lag,Lag 3,subtidal,CCGP,no
+10/9/20,Laguna Beach,33.52987,-117.78093,LA,nonurban,Lag,Lag 5,subtidal,CCGP,no
+10/9/20,Laguna Beach,33.52987,-117.78093,LA,nonurban,Lag,Lag 6,subtidal,CCGP,no
+10/9/20,Laguna Beach,33.52987,-117.78093,LA,nonurban,Lag,Lag 7,subtidal,CCGP,no
+10/9/20,Laguna Beach,33.52987,-117.78093,LA,nonurban,Lag,Lag 8,subtidal,CCGP,no
+10/9/20,Laguna Beach,33.52987,-117.78093,LA,nonurban,Lag,Lag 9,subtidal,CCGP,no
+8/28/20,Recreation Point,33.54119,-117.792758,LA,nonurban,Rec,Rec 2,subtidal,CCGP,no
+8/28/20,Recreation Point,33.54119,-117.792758,LA,nonurban,Rec,Rec 3,subtidal,CCGP,no
+8/28/20,Recreation Point,33.54119,-117.792758,LA,nonurban,Rec,Rec 4,subtidal,CCGP,no
+8/28/20,Recreation Point,33.54119,-117.792758,LA,nonurban,Rec,Rec 5,subtidal,CCGP,no
+3/8/21,"Big Rock Reef, San Diego",32.8223,-117.28095,SD,nonurban,Brr,Brr1,intertidal,Armstrong,no
+3/8/21,"Big Rock Reef, San Diego",32.82241,-117.28093,SD,nonurban,Brr,Brr2,intertidal,Armstrong,no
+3/8/21,"Big Rock Reef, San Diego",32.82241,-117.28093,SD,nonurban,Brr,Brr3,intertidal,Armstrong,no
+3/8/21,"Big Rock Reef, San Diego",32.82248,-117.28097,SD,nonurban,Brr,Brr4,intertidal,Armstrong,no
+3/8/21,"Big Rock Reef, San Diego",32.82248,-117.28097,SD,nonurban,Brr,Brr5,intertidal,Armstrong,no
+3/8/21,"Big Rock Reef, San Diego",32.8226,-117.28089,SD,nonurban,Brr,Brr6,intertidal,Armstrong,no
+3/8/21,"Big Rock Reef, San Diego",32.8226,-117.28089,SD,nonurban,Brr,Brr7,intertidal,Armstrong,no
+3/8/21,"Big Rock Reef, San Diego",32.82263,-117.28086,SD,nonurban,Brr,Brr8,intertidal,Armstrong,no
+3/8/21,"Big Rock Reef, San Diego",32.82267,-117.28084,SD,nonurban,Brr,Brr9,intertidal,Armstrong,no
+5/25/22,"La Jolla, San Diego",32.8196,-117.2871,SD,nonurban,Bir,Bir1,subtidal,Parnell,no
+5/25/22,"La Jolla, San Diego",41.8196,-108.2871,SD,nonurban,Bir,Bir10,subtidal,Parnell,no
+5/25/22,"La Jolla, San Diego",42.8196,-107.2871,SD,nonurban,Bir,Bir11,subtidal,Parnell,no
+5/25/22,"La Jolla, San Diego",43.8196,-106.2871,SD,nonurban,Bir,Bir12,subtidal,Parnell,no
+5/25/22,"La Jolla, San Diego",44.8196,-105.2871,SD,nonurban,Bir,Bir13,subtidal,Parnell,no
+5/25/22,"La Jolla, San Diego",45.8196,-104.2871,SD,nonurban,Bir,Bir14,subtidal,Parnell,no
+5/25/22,"La Jolla, San Diego",46.8196,-103.2871,SD,nonurban,Bir,Bir15,subtidal,Parnell,no
+5/25/22,"La Jolla, San Diego",33.8196,-116.2871,SD,nonurban,Bir,Bir2,subtidal,Parnell,no
+5/25/22,"La Jolla, San Diego",34.8196,-115.2871,SD,nonurban,Bir,Bir3,subtidal,Parnell,no
+5/25/22,"La Jolla, San Diego",35.8196,-114.2871,SD,nonurban,Bir,Bir4,subtidal,Parnell,no
+5/25/22,"La Jolla, San Diego",36.8196,-113.2871,SD,nonurban,Bir,Bir5,subtidal,Parnell,no
+5/25/22,"La Jolla, San Diego",37.8196,-112.2871,SD,nonurban,Bir,Bir6,subtidal,Parnell,no
+5/25/22,"La Jolla, San Diego",38.8196,-111.2871,SD,nonurban,Bir,Bir7,subtidal,Parnell,no
+10/28/20,Leucadia,33.06373,-117.31094,SD,nonurban,Leu,Leu 1,subtidal,CCGP,no
+10/28/20,Leucadia,33.06373,-117.31094,SD,nonurban,Leu,Leu 3,subtidal,CCGP,no
+10/28/20,Leucadia,33.06373,-117.31094,SD,nonurban,Leu,Leu 4,subtidal,CCGP,no
+10/28/20,Leucadia,33.06373,-117.31094,SD,nonurban,Leu,Leu 5,subtidal,CCGP,no
+6/16/22,Botanical Beach,48.52918,-124.4525,Vic,nonurban,Bot,Bot1,intertidal,Armstrong,no
+6/16/22,Botanical Beach,48.52851,-124.45248,Vic,nonurban,Bot,Bot10,intertidal,Armstrong,no
+6/16/22,Botanical Beach,48.52839,-124.45242,Vic,nonurban,Bot,Bot11,intertidal,Armstrong,no
+6/16/22,Botanical Beach,48.52821,-124.45238,Vic,nonurban,Bot,Bot12,intertidal,Armstrong,no
+6/16/22,Botanical Beach,48.52816,-124.45222,Vic,nonurban,Bot,Bot13,intertidal,Armstrong,no
+6/16/22,Botanical Beach,48.52813,-124.45131,Vic,nonurban,Bot,Bot14,intertidal,Armstrong,no
+6/16/22,Botanical Beach,48.528,-124.45078,Vic,nonurban,Bot,Bot15,intertidal,Armstrong,no
+6/16/22,Botanical Beach,48.52918,-124.4525,Vic,nonurban,Bot,Bot2,intertidal,Armstrong,no
+6/16/22,Botanical Beach,48.52914,-124.45246,Vic,nonurban,Bot,Bot4,intertidal,Armstrong,no
+6/16/22,Botanical Beach,48.52916,-124.4523,Vic,nonurban,Bot,Bot5,intertidal,Armstrong,no
+6/16/22,Botanical Beach,48.52909,-124.45245,Vic,nonurban,Bot,Bot6,intertidal,Armstrong,no
+6/16/22,Botanical Beach,48.52883,-124.45221,Vic,nonurban,Bot,Bot7,intertidal,Armstrong,no
+6/16/22,Botanical Beach,48.52874,-124.45231,Vic,nonurban,Bot,Bot8,intertidal,Armstrong,no
+6/16/22,Botanical Beach,48.52849,-124.45229,Vic,nonurban,Bot,Bot9,intertidal,Armstrong,no
+6/15/22,"Whiffin Spit, Sooke BC",48.35431,-123.72819,Vic,nonurban,Whif,Whif1,intertidal,Armstrong,no
+6/15/22,"Whiffin Spit, Sooke BC",48.35402,-123.72776,Vic,nonurban,Whif,Whif10,intertidal,Armstrong,no
+6/15/22,"Whiffin Spit, Sooke BC",48.35431,-123.72819,Vic,nonurban,Whif,Whif2,intertidal,Armstrong,no
+6/15/22,"Whiffin Spit, Sooke BC",48.35429,-123.72848,Vic,nonurban,Whif,Whif3,intertidal,Armstrong,no
+6/15/22,"Whiffin Spit, Sooke BC",48.35429,-123.72848,Vic,nonurban,Whif,Whif4,intertidal,Armstrong,no
+6/15/22,"Whiffin Spit, Sooke BC",48.35419,-123.72848,Vic,nonurban,Whif,Whif6,intertidal,Armstrong,no
+6/15/22,"Whiffin Spit, Sooke BC",48.35416,-123.72786,Vic,nonurban,Whif,Whif7,intertidal,Armstrong,no
+6/15/22,"Whiffin Spit, Sooke BC",48.35404,-123.72781,Vic,nonurban,Whif,Whif8,intertidal,Armstrong,no
+6/15/22,"Whiffin Spit, Sooke BC",48.35404,-123.72781,Vic,nonurban,Whif,Whif9,intertidal,Armstrong,no
+7/22/20,"Cabrillo Beach, San Pedro",33.70716,-118.28562,LA,urban,Cab,Cab11,intertidal,Armstrong/Kawahara/Dellinger,no
+7/22/20,"Cabrillo Beach, San Pedro",33.70716,-118.28562,LA,urban,Cab,Cab12,intertidal,Armstrong/Kawahara/Dellinger,no
+7/22/20,"Cabrillo Beach, San Pedro",33.70699,-118.28576,LA,urban,Cab,Cab13,intertidal,Armstrong/Kawahara/Dellinger,no
+7/22/20,"Cabrillo Beach, San Pedro",33.70703,-118.28566,LA,urban,Cab,Cab14,intertidal,Armstrong/Kawahara/Dellinger,no
+7/22/20,"Cabrillo Beach, San Pedro",33.70703,-118.28566,LA,urban,Cab,Cab15,intertidal,Armstrong/Kawahara/Dellinger,no
+7/22/20,"Cabrillo Beach, San Pedro",33.70698,-118.28567,LA,urban,Cab,Cab16,intertidal,Armstrong/Kawahara/Dellinger,no
+7/22/20,"Cabrillo Beach, San Pedro",33.70674,-118.28593,LA,urban,Cab,Cab17,intertidal,Armstrong/Kawahara/Dellinger,no
+7/23/20,"Cabrillo Beach, San Pedro",33.70648,-118.28591,LA,urban,Cab,Cab18,intertidal,Armstrong/Kawahara/Dellinger,no
+7/23/20,"Cabrillo Beach, San Pedro",33.70648,-118.28591,LA,urban,Cab,Cab19,intertidal,Armstrong/Kawahara/Dellinger,no
+7/22/20,"Cabrillo Beach, San Pedro",33.70802,-118.28498,LA,urban,Cab,Cab2,intertidal,Armstrong/Kawahara/Dellinger,no
+7/23/20,"Cabrillo Beach, San Pedro",33.70658,-118.28583,LA,urban,Cab,Cab20,intertidal,Armstrong/Kawahara/Dellinger,no
+7/22/20,"Cabrillo Beach, San Pedro",33.70806,-118.28498,LA,urban,Cab,Cab3,intertidal,Armstrong/Kawahara/Dellinger,no
+7/22/20,"Cabrillo Beach, San Pedro",33.70806,-118.28498,LA,urban,Cab,Cab4,intertidal,Armstrong/Kawahara/Dellinger,no
+7/22/20,"Cabrillo Beach, San Pedro",33.70794,-118.28515,LA,urban,Cab,Cab6,intertidal,Armstrong/Kawahara/Dellinger,no
+7/22/20,"Cabrillo Beach, San Pedro",33.708,-118.28515,LA,urban,Cab,Cab7,intertidal,Armstrong/Kawahara/Dellinger,no
+7/22/20,"Cabrillo Beach, San Pedro",33.708,-118.28515,LA,urban,Cab,Cab8,intertidal,Armstrong/Kawahara/Dellinger,no
+11/14/20,Portuguese point,33.73837,-118.37577,LA,urban,Port,Port1,intertidal,Armstrong/Lee,no
+11/14/20,Portuguese point,33.73775,-118.37575,LA,urban,Port,Port10,intertidal,Armstrong/Lee,no
+11/14/20,Portuguese point,33.73828,-118.37565,LA,urban,Port,Port2,intertidal,Armstrong/Lee,no
+11/14/20,Portuguese point,33.73828,-118.37582,LA,urban,Port,Port3,intertidal,Armstrong/Lee,no
+11/14/20,Portuguese point,33.73821,-118.37589,LA,urban,Port,Port4,intertidal,Armstrong/Lee,no
+11/14/20,Portuguese point,33.73808,-118.37585,LA,urban,Port,Port5,intertidal,Armstrong/Lee,no
+11/14/20,Portuguese point,33.73799,-118.37601,LA,urban,Port,Port6,intertidal,Armstrong/Lee,no
+11/14/20,Portuguese point,33.73789,-118.37599,LA,urban,Port,Port7,intertidal,Armstrong/Lee,no
+7/23/20,"Wilders Addition Park, San Pedro",33.7096,-118.29956,LA,urban,WAP,WAP1,intertidal,Armstrong/Kawahara/Dellinger,no
+7/23/20,"Wilders Addition Park, San Pedro",33.7096,-118.29956,LA,urban,WAP,WAP2,intertidal,Armstrong/Kawahara/Dellinger,no
+7/23/20,"Wilders Addition Park, San Pedro",33.70963,-118.29977,LA,urban,WAP,WAP3,intertidal,Armstrong/Kawahara/Dellinger,no
+7/23/20,"Wilders Addition Park, San Pedro",33.70962,-118.29989,LA,urban,WAP,WAP4,intertidal,Armstrong/Kawahara/Dellinger,no
+11/16/20,"Wilders Addition Park, San Pedro",33.70959,-118.2997,LA,urban,WAP,WAP5,intertidal,Armstrong/Lee/Kawahara,no
+11/16/20,"Wilders Addition Park, San Pedro",33.70963,-118.29988,LA,urban,WAP,WAP6,intertidal,Armstrong/Lee/Kawahara,no
+11/16/20,"Wilders Addition Park, San Pedro",33.70959,-118.29991,LA,urban,WAP,WAP7,intertidal,Armstrong/Lee/Kawahara,no
+11/16/20,"Wilders Addition Park, San Pedro",33.70964,-118.30015,LA,urban,WAP,WAP8,intertidal,Armstrong/Lee/Kawahara,no
+11/16/20,"Wilders Addition Park, San Pedro",33.70936,-118.29888,LA,urban,WAP,WAP9,intertidal,Armstrong/Lee/Kawahara,no
+7/24/20,"White Point, San Pedro",33.71497,-118.31871,LA,urban,Wh,Wh1,intertidal,Armstrong/Dellinger,no
+7/24/20,"White Point, San Pedro",33.71505,-118.3196,LA,urban,Wh,Wh10,intertidal,Armstrong/Dellinger,no
+7/24/20,"White Point, San Pedro",33.71489,-118.3187,LA,urban,Wh,Wh3,intertidal,Armstrong/Dellinger,no
+7/24/20,"White Point, San Pedro",33.71494,-118.31869,LA,urban,Wh,Wh4,intertidal,Armstrong/Dellinger,no
+7/24/20,"White Point, San Pedro",33.71491,-118.31875,LA,urban,Wh,Wh5,intertidal,Armstrong/Dellinger,no
+7/24/20,"White Point, San Pedro",33.71485,-118.31871,LA,urban,Wh,Wh6,intertidal,Armstrong/Dellinger,no
+7/24/20,"White Point, San Pedro",33.7148,-118.3189,LA,urban,Wh,Wh7,intertidal,Armstrong/Dellinger,no
+7/24/20,"White Point, San Pedro",33.71487,-118.31896,LA,urban,Wh,Wh9,intertidal,Armstrong/Dellinger,no
+11/4/20,KOU Rock,33.7203,-118.33722,LA,urban,KOU,KOU 1,subtidal,CCGP,no
+11/4/20,KOU Rock,33.7203,-118.33722,LA,urban,KOU,KOU 10,subtidal,CCGP,no
+11/4/20,KOU Rock,33.7203,-118.33722,LA,urban,KOU,KOU 11,subtidal,CCGP,no
+11/4/20,KOU Rock,33.7203,-118.33722,LA,urban,KOU,KOU 12,subtidal,CCGP,no
+11/4/20,KOU Rock,33.7203,-118.33722,LA,urban,KOU,KOU 2,subtidal,CCGP,no
+11/4/20,KOU Rock,33.7203,-118.33722,LA,urban,KOU,KOU 3,subtidal,CCGP,no
+11/4/20,KOU Rock,33.7203,-118.33722,LA,urban,KOU,KOU 4,subtidal,CCGP,no
+11/4/20,KOU Rock,33.7203,-118.33722,LA,urban,KOU,KOU 5,subtidal,CCGP,no
+11/4/20,KOU Rock,33.7203,-118.33722,LA,urban,KOU,KOU 6,subtidal,CCGP,no
+11/4/20,KOU Rock,33.7203,-118.33722,LA,urban,KOU,KOU 7,subtidal,CCGP,no
+11/4/20,KOU Rock,33.7203,-118.33722,LA,urban,KOU,KOU 8,subtidal,CCGP,no
+11/4/20,KOU Rock,33.7203,-118.33722,LA,urban,KOU,KOU 9,subtidal,CCGP,no
+1/6/00, Pelican Cove,33.7409035,-118.4039947,LA,urban,Pel,Pel 1,subtidal,CCGP,no
+11/13/20, Pelican Cove,33.7409035,-118.4039947,LA,urban,Pel,Pel 2,subtidal,CCGP,no
+11/13/20, Pelican Cove,33.7409035,-118.4039947,LA,urban,Pel,Pel 3,subtidal,CCGP,no
+11/13/20, Pelican Cove,33.7409035,-118.4039947,LA,urban,Pel,Pel 4,subtidal,CCGP,no
+11/13/20, Pelican Cove,33.7409035,-118.4039947,LA,urban,Pel,Pel 5,subtidal,CCGP,no
+11/13/20, Pelican Cove,33.7409035,-118.4039947,LA,urban,Pel,Pel 6,subtidal,CCGP,no
+5/27/22,"Point Loma, San Diego",32.7007,-117.2638,SD,urban,Lom,Lom10,subtidal,Parnell,no
+5/27/22,"Point Loma, San Diego",32.7007,-117.2638,SD,urban,Lom,Lom11,subtidal,Parnell,no
+5/27/22,"Point Loma, San Diego",32.7007,-117.2638,SD,urban,Lom,Lom12,subtidal,Parnell,no
+5/27/22,"Point Loma, San Diego",32.7007,-117.2638,SD,urban,Lom,Lom13,subtidal,Parnell,no
+5/27/22,"Point Loma, San Diego",32.7007,-117.2638,SD,urban,Lom,Lom14,subtidal,Parnell,no
+5/27/22,"Point Loma, San Diego",32.7007,-117.2638,SD,urban,Lom,Lom15,subtidal,Parnell,no
+5/27/22,"Point Loma, San Diego",32.7007,-117.2638,SD,urban,Lom,Lom3,subtidal,Parnell,no
+5/27/22,"Point Loma, San Diego",32.7007,-117.2638,SD,urban,Lom,Lom4,subtidal,Parnell,no
+5/27/22,"Point Loma, San Diego",32.7007,-117.2638,SD,urban,Lom,Lom6,subtidal,Parnell,no
+5/27/22,"Point Loma, San Diego",32.7007,-117.2638,SD,urban,Lom,Lom7,subtidal,Parnell,no
+5/27/22,"Point Loma, San Diego",32.7007,-117.2638,SD,urban,Lom,Lom8,subtidal,Parnell,no
+5/27/22,"Point Loma, San Diego",32.7007,-117.2638,SD,urban,Lom,Lom9,subtidal,Parnell,no
+6/13/22,"Clover Point, Victoria BC",48.40281,-123.35042,Vic,urban,Clov,Clov1,intertidal,Armstrong,no
+6/17/22,"Clover Point, Victoria BC",48.40269,-123.3501,Vic,urban,Clov,Clov10,intertidal,Armstrong,no
+6/17/22,"Clover Point, Victoria BC",48.40269,-123.3501,Vic,urban,Clov,Clov11,intertidal,Armstrong,no
+6/17/22,"Clover Point, Victoria BC",48.40252,-123.34942,Vic,urban,Clov,Clov12,intertidal,Armstrong,no
+6/17/22,"Clover Point, Victoria BC",48.40253,-123.34939,Vic,urban,Clov,Clov13,intertidal,Armstrong,no
+6/17/22,"Clover Point, Victoria BC",48.40255,-123.34916,Vic,urban,Clov,Clov14,intertidal,Armstrong,no
+6/17/22,"Clover Point, Victoria BC",48.40259,-123.34889,Vic,urban,Clov,Clov15,intertidal,Armstrong,no
+6/13/22,"Clover Point, Victoria BC",48.40319,-123.35071,Vic,urban,Clov,Clov2,intertidal,Armstrong,no
+6/13/22,"Clover Point, Victoria BC",48.40319,-123.35071,Vic,urban,Clov,Clov3,intertidal,Armstrong,no
+6/14/22,"Clover Point, Victoria BC",48.40323,-123.35067,Vic,urban,Clov,Clov4,intertidal,Armstrong,no
+6/14/22,"Clover Point, Victoria BC",48.40309,-123.35074,Vic,urban,Clov,Clov5,intertidal,Armstrong,no
+6/14/22,"Clover Point, Victoria BC",48.40262,-123.35008,Vic,urban,Clov,Clov6,intertidal,Armstrong,no
+6/17/22,"Clover Point, Victoria BC",48.40258,-123.35011,Vic,urban,Clov,Clov7,intertidal,Armstrong,no
+6/17/22,"Clover Point, Victoria BC",48.40258,-123.35011,Vic,urban,Clov,Clov8,intertidal,Armstrong,no
+6/17/22,"Clover Point, Victoria BC",48.40269,-123.3501,Vic,urban,Clov,Clov9,intertidal,Armstrong,no
+6/12/22,"Macaulay Point, Victoria BC",48.41659,-123.40953,Vic,urban,Mac,Mac1,intertidal,Armstrong,no
+6/12/22,"Macaulay Point, Victoria BC",48.41669,-123.40941,Vic,urban,Mac,Mac3,intertidal,Armstrong,no
+6/12/22,"Macaulay Point, Victoria BC",48.41663,-123.40938,Vic,urban,Mac,Mac4,intertidal,Armstrong,no
+6/12/22,"Macaulay Point, Victoria BC",48.41663,-123.40941,Vic,urban,Mac,Mac5,intertidal,Armstrong,no
+6/12/22,"Macaulay Point, Victoria BC",48.41675,-123.40932,Vic,urban,Mac,Mac6,intertidal,Armstrong,no
+6/12/22,"Macaulay Point, Victoria BC",48.41681,-123.41097,Vic,urban,Mac,Mac7,intertidal,Armstrong,no
+6/17/22,"Macaulay Point, Victoria BC",48.40259,-123.40936,Vic,urban,Mac,Mac8,intertidal,Armstrong,no
+6/17/22,"Macaulay Point, Victoria BC",48.41677,-123.4091,Vic,urban,Mac,Mac9,intertidal,Armstrong,no
