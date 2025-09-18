@@ -82,15 +82,18 @@ plot(tess3.obj, pch = 19, col = "blue",
 # retrieve tess3 Q matrix for K = 2 clusters 
 q.matrix <- qmatrix(tess3.obj, K = 2)
 
+#best K is K=1 so make plot for that too
+q.matrix.1 <- qmatrix(tess3.obj, K = 1)
+
 # STRUCTURE-like barplot for the Q-matrix 
 #combine region and dev for easier labeling
 sites.thinned<-sites.thinned %>% 
   unite(dev_region, c(region, Dev), sep="_", remove=TRUE)
 
-barplot(q.matrix, border = NA, space = 0, 
+barplot(q.matrix.1, border = "black", space = 0, 
         xlab = "Individuals", ylab = "Ancestry proportions", 
-        main = "Ancestry matrix") -> bp
-axis(1, at = 1:nrow(q.matrix), labels = sites.thinned$dev_region,las = 3, cex.axis = .4) 
+        main = "Ancestry matrix, K=1") -> bp
+axis(1, at = 1:nrow(q.matrix), labels = sites.thinned$Sample_ID,las = 3, cex.axis = .4) 
 #labeled with sample_IDs but need more organization!
 
 #are individuals grouping separately based on the qmatrix? Test as "pop" for the color
@@ -166,35 +169,40 @@ is.qlist(qlist=qlist)#verify format
 
 #unique(sites.thinned$Site_ID) #get list of sites
 poporder=c("Vic_urban","Vic_nonurban","LA_urban","LA_nonurban","SD_urban", "SD_nonurban")
-labs <- c("K=2", "K=3")
+labs <- c("K=1", "K=2", "K=3", "K=4", "K=5", "K=6")
 depth=c("intertidal", "subtidal")
-
 
 #combine region and dev for easier labeling
 labset<-sites.thinned
 
-labset<-labset[,3:8] #pull data that we want from sites.thinned
+labset<-labset[,3:6] #pull data that we want from sites.thinned
 
-slist1 <- alignK(qlist[2:3],type="auto")
+slist1 <- alignK(qlist[1:6],type="auto")
+
+# Convert both columns to character
+labset$dev_region <- as.character(labset$dev_region)
+labset$Site_ID    <- as.character(labset$Site_ID)
+
 verifyGrplab(grplab=labset[,c("dev_region", "Site_ID")])#verify format
 
+
 #plot samples separated by region_dev
-p1<-plotQ(slist1,imgoutput="join",returnplot=TRUE,exportplot=FALSE,basesize=11,
-            splabsize=7,height=7,
-            grplab=labset[,c("dev_region", "Site_ID")],subsetgrp=poporder,
-            grplabsize=3,linesize=1,pointsize=3,splab=labs,grplabangle=0,
-            grplabheight = 5)
+p1<-plotQ(slist1,imgoutput="join",returnplot=TRUE,exportplot=FALSE,basesize=16,
+            splabsize=15,height=7,
+            grplab=labset["dev_region"],subsetgrp=poporder,
+            grplabsize=5,linesize=1,pointsize=3,splab=labs,grplabangle=0,
+            grplabheight = 5, ordergrp=TRUE)
 
 #add intertidal/subtidal labels
-p2<-plotQ(slist1,imgoutput="join",returnplot=T,exportplot=F,basesize=11,
+p2<-plotQ(slist1,imgoutput="join",returnplot=TRUE,exportplot=FALSE,basesize=11,
           splabsize=7,height=7,
           grplab=labset[,c("dev_region", "Depth..m.")],subsetgrp=poporder,
           grplabsize=4,linesize=1,pointsize=3,splab=labs,grplabangle=0,
           grplabheight = 5) 
 grid.arrange(p1$plot[[1]], p2$plot[[1]])
-popstruc<-grid.arrange(p1$plot[[1]])
+popstruc.full<-grid.arrange(p1$plot[[1]])
 
-ggsave("popstructure.png", popstruc, width=30, height=20, units = "cm")
+ggsave("popstructure.full.png", popstruc.full, width=30, height=30, units = "cm")
 
 ###PCA #####
 # load data and convert to gds format
@@ -242,24 +250,29 @@ sites.thinned$Site_ID <- factor(sites.thinned$Site_ID, levels = unique(sites.thi
 #ensure shapes separate urban/nonurban
 shapes<-ifelse(sites.thinned$dev_region)
 ggplot(tab, aes(x = EV2, y = EV1,fill=as.factor(sites.thinned$Dev))) +geom_point(size = 5, stroke = 1, aes(color = I("black")))
-#pca<-
+
+
+pca<-
 ggplot(tab, aes(x = EV2, y = EV1, fill=as.factor(sites.thinned$Dev), shape=sites.thinned$region))+
   geom_point(size = 5, stroke = 1, aes(color = I("black"))) +
-  labs(x = 'PC1 0.7256147%', y='PC2 0.7241320%', fill = "Development",  # Legend title for fill
+  labs(x = 'PC1 (0.73%)', y='PC2 (0.72%)', fill = "Development",  # Legend title for fill
        shape = "Region")+
-  theme_minimal(base_size = 18)+
-  scale_fill_manual(name="Development",values = c("nonurban"="#99d1ec" ,"urban" = "#665d4b"))+
+  theme(legend.position="none")+
+  scale_fill_manual(name="Urbanization",values = c("nonurban"="#99d1ec" ,"urban" = "#665d4b"))+
   scale_shape_manual(name="Region",values = c(21, 22, 24)) +
   guides(color = "none")+
-  theme_box()
+  theme_bigbox()
 
-ggsave("PCA_neutral.png", pca, width=30, height=20, units = "cm")
+ggsave("PCA_neutral.png", pca,  width=30, height=40, units = "cm")
 
-ggplot(tab, aes(x = EV2, y = EV1, shape=sites.thinned$dev_region))+
-  geom_point(size = 5)+
-  labs(x = 'PC1 0.7256147%', y='PC2 0.7241320%')+
-  theme_minimal(base_size = 18)+
-  theme(panel.background = element_rect(fill = "white"))
+#colored by region
+region.pca<-ggplot(tab, aes(x = EV2, y = EV1, color=sites.thinned$region))+
+  geom_point(size = 3)+
+  labs(x = 'PC1 (0.726%)', y='PC2 (0.724%)',  color = "Region" )+
+  theme_box() +  
+  scale_color_manual(values = c("Vic"="orange" , "LA" = "purple2",  "SD" = "orchid2"))
+
+ggsave("PCA_neutral.region.png", region.pca, width=20, height=15, units = "cm")
 
 ggplot(tab, aes(x = EV4, y = EV3, color=as.factor(sites.thinned$Dev), shape=sites.thinned$dev_region))+
   geom_point(size = 5)+

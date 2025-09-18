@@ -1,6 +1,6 @@
 #outlier analyses
 #Madison Armstrong
-#2/14/25
+#last modified 8/13/25
 
 setwd("~Desktop/urbanurchins")
 # #install via 
@@ -35,9 +35,10 @@ library(BEDMatrix)
 library(bigsnpr)
 library(data.table)
 library(eulerr)
-
+library(lfmm)
 #remotes::install_github("kaustubhad/fastman", ref = "main", force = TRUE) #had to download this way
 library(fastman)
+library(LEA)
 
 ####Prepping bed, fam and bim files####
 #clean and convert vcf to bed file in terminal
@@ -73,6 +74,10 @@ EV
 
 #####visualization plots####
 plot(pcadapt, option = "screeplot") 
+#get pc axis percentages
+print(pcadapt$singular.values)
+#[1] 0.09283670 0.08839705 0.08763357 0.08746102 0.08721343 0.08704795
+
 #manhattan plot
 plot(pcadapt, option="manhattan")
 #qqplot
@@ -97,14 +102,18 @@ meta.order <- meta[match(inds$V1,meta$Sample_ID),] #183 samples now woo
 
 
 ##interaction of region and urban/nonurban boxplots
-PC3 <- ggplot(data=meta.order,aes(x=meta.order$region,y=pcadapt$scores[,3],fill=meta.order$Dev))  + xlab("Region")+ ylab("Pcadapt Scores (PC3)")+ geom_boxplot()+theme_box()+ scale_fill_manual(values = c("nonurban"="#99d1ec" ,"urban" = "#665d4b"))
-PC5 <- ggplot(data=meta.order,aes(x=meta.order$region,y=pcadapt$scores[,5],fill=meta.order$Dev)) + xlab("Region")+ ylab("Pcadapt Scores (PC5)") + geom_boxplot()+theme_box()+ scale_fill_manual(values = c("nonurban"="#99d1ec" ,"urban" = "#665d4b"))
-PC6 <- ggplot(data=meta.order,aes(x=meta.order$region,y=pcadapt$scores[,6],fill=meta.order$Dev)) + xlab("Region")+ ylab("Pcadapt Scores (PC6)") + geom_boxplot() +theme_box() + scale_fill_manual(values = c("nonurban"="#99d1ec" ,"urban" = "#665d4b"))
-pcadapt_int<-
-  PC3+PC5+PC6 +plot_layout(guides="collect",nrow=1)
+PC3 <- ggplot(data=meta.order,aes(x=meta.order$region,y=pcadapt$scores[,3],fill=meta.order$Dev))  + xlab("Region")+ ylab("PC3")+ geom_boxplot()+theme_box()+ scale_fill_manual(values = c("nonurban"="#99d1ec" ,"urban" = "#665d4b")) + theme(legend.position = "none") 
+PC5 <- ggplot(data=meta.order,aes(x=meta.order$region,y=pcadapt$scores[,5],fill=meta.order$Dev)) + xlab("Region")+ ylab("PC5") + geom_boxplot()+theme_box()+  scale_fill_manual(values = c("nonurban"="#99d1ec" ,"urban" = "#665d4b"))
+PC6 <- ggplot(data=meta.order,aes(x=meta.order$region,y=pcadapt$scores[,6],fill=meta.order$Dev)) + xlab("Region")+ ylab("PC6") + geom_boxplot() +theme_box() + scale_fill_manual(values = c("nonurban"="#99d1ec" ,"urban" = "#665d4b"))
 
-ggsave("PCadapt_interaction.png", pcadapt_int, width=40, height=15, units = "cm")
+#make plot
+pcadapt_int <- 
+  PC5 + theme(legend.position = "none") +
+  PC6 + theme(legend.position = "none") +
+  plot_layout(nrow = 1)
+ggsave("PCadapt_interaction.png", pcadapt_int, width=30, height=15, units = "cm")
 
+ggsave("PCadapt_PC3.png", PC3, width=15, height=15, units = "cm")
 ##Make full pcadapt frame
 pcframe <- data.frame(bim_data,PC.full=p.adjust(pcadapt$pvalues,method="fdr"),
                       PC1=p.adjust(pcadapt.comp$pvalues[,1],method="fdr"),
@@ -131,23 +140,71 @@ bigcontig_counts <- table(pcframe_bigcontig$) #helpful visualization
 
 
 png("full.manhattan_plot.png", width = 1000, height = 400, res = 150)
-fastman(pcframe_bigcontig,chr="V1",bp="V4", p="PC.full")
+fastman(pcframe_bigcontig,chr="V1",bp="V4", p="PC.full", colAbovePval=TRUE, col = "blues")
 dev.off() #closes graphics device and writes file
 
 png("manhattan_plotPC3.png", width = 1000, height = 600, res = 150)
-fastman(pcframe_bigcontig,chr="V1",bp="V4",p="PC3")
+fastman(pcframe_bigcontig,chr="V1",bp="V4",p="PC3", col = c("#2f8fcf","#64b4fb"))
 dev.off() #closes graphics device and writes file
 
 png("manhattan_plotPC5.png", width = 1000, height = 600, res = 150)
-fastman(pcframe_bigcontig,chr="V1",bp="V4",p="PC5", suggestiveline=0.1)
+fastman(pcframe_bigcontig,chr="V1",bp="V4",p="PC5", suggestiveline=0.1, col = c("#2f8fcf","#64b4fb"))
+abline(h = 0.1, col = "red", lwd = 2)
 dev.off() #closes graphics device and writes file
 
 png("manhattan_plotPC6.png", width = 1000, height = 600, res = 150)
-fastman(pcframe_bigcontig,chr="V1",bp="V4",p="PC6", suggestiveline=0.1)
+fastman(pcframe_bigcontig,chr="V1",bp="V4",p="PC6", suggestiveline=0.1, col = c("#2f8fcf","#64b4fb"))
+abline(h = 0.1, col = "red", lwd = 2)
 dev.off() #closes graphics device and writes file
 
 
-#stats for PC axes
+###visualization of sliding window FST ####
+#read in dataframes made by Katie 9/15/25
+int_w<-read.csv("genomicdata/interaction_pvals.csv")
+reg_w<-read.csv("genomicdata/region_pvals.csv")
+urb_w<-read.csv("genomicdata/urban_pvals.csv")
+
+png("slidingurban.png", width = 900, height = 400, res = 150)
+urb_w$SNP <- " "
+fastman(urb_w,chr="chr",bp="midpoint", p="P",  annotatePval = -log10(0.009982191),
+        colAbovePval = TRUE, col=c("#665D4B","#665D4B"),col2=c("#397F39","#5FAB8F"), ylab="-log10(pvalue)")
+segments(
+  x0 = -0.5,
+  x1 = 22,
+  y0 = -log10(0.009982191),
+  y1 = -log10(0.009982191),
+  col = "#665D4B",
+  lwd = 2
+)
+dev.off() #closes graphics device and writes file
+
+png("slidingregion.png", width = 900, height = 400, res = 150)
+reg_w$SNP <- " "
+fastman(reg_w,chr="chr",bp="midpoint", p="P",  annotatePval = -log10(0.009826774),
+        colAbovePval = TRUE, col =c("deeppink2","deeppink2"), col2=c("#397F39","#5FAB8F"), ylab="-log10(pvalue)")
+ segments(
+  x0 = -0.5,
+  x1 = 22,
+  y0 = -log10(0.009826774),
+  y1 = -log10(0.009826774),
+  col = "deeppink2",
+  lwd = 2)
+dev.off() #closes graphics device and writes file
+
+png("slidingint.png", width = 900, height = 400, res = 150)
+int_w$SNP <- " "
+fastman(int_w,chr="chr",bp="midpoint", p="P",  annotatePval = -log10(0.009876695), suggestiveline=FALSE,
+        colAbovePval = TRUE, col=c("limegreen", "limegreen"), col2=c("#397F39","#5FAB8F"), ylab="-log10(pvalue)")
+segments(
+  x0 = -0.5,
+  x1 = 22,
+  y0 = -log10(0.009876695),
+  y1 = -log10(0.009876695),
+  col = "limegreen",
+  lwd = 2)
+dev.off() #closes graphics device and writes file
+
+##stats for PC axes###
 pcdata<-cbind(meta.order, pcadapt$scores)
 head(pcdata)
 #PC1 not sig
@@ -179,25 +236,31 @@ pl <- ggplot(scores, aes(x = PC1, y = PC2, color = pop, fill = pop)) +
   stat_ellipse(geom = "polygon", alpha = 0.15, color = NA) + stat_ellipse(geom = "path", size = 1) +
   scale_color_manual(values = c("nonurban" = "#99d1ec", "urban" = "#665d4b")) +
   scale_fill_manual(values = c("nonurban" = "#99d1ec", "urban" = "#665d4b")) +
-  theme_box()
+  labs(title="A", x = "PC1 (0.093%)", y = "PC2 (0.088%)")+
+  theme_box() + theme(legend.position = "none")
 
 p2 <- ggplot(scores, aes(x = PC3, y = PC4, color = pop, fill = pop)) +
   geom_point(shape = 21, size = 2) +
   stat_ellipse(geom = "polygon", alpha = 0.15, color = NA) + stat_ellipse(geom = "path", size = 1) +
   scale_color_manual(values = c("nonurban" = "#99d1ec", "urban" = "#665d4b")) +
   scale_fill_manual(values = c("nonurban" = "#99d1ec", "urban" = "#665d4b")) +
-  theme_box()
+  labs(title="B", x = "PC3 (0.088%)", y = "PC4 (0.087%)")+
+  theme_box() + theme(legend.position = "none")
 
 p3 <- ggplot(scores, aes(x = PC5, y = PC6, color = pop, fill = pop)) +
   geom_point(shape = 21, size = 2) +
   stat_ellipse(geom = "polygon", alpha = 0.15, color = NA) + stat_ellipse(geom = "path", size = 1) +
   scale_color_manual(values = c("nonurban" = "#99d1ec", "urban" = "#665d4b")) +
   scale_fill_manual(values = c("nonurban" = "#99d1ec", "urban" = "#665d4b")) +
+  labs(title="C", x = "PC5 (0.087%)", y = "PC6 (0.087%)")+
   theme_box()
 
 # Combine the plots in a 1x3 grid
-pca_urb<-(pl+p2+p3 + plot_layout(ncol = 3, guides="collect"))
-ggsave("pcadapt_urb.png", pca_urb, width=35, height=15, units = "cm")
+pca_urb<-(pl+p2+p3)
+ggsave("pcadapt_urb.png", pca_urb, width=40, height=10, units = "cm")
+
+ggsave("pcadapt_urb_pc5.png", p3, width=15, height=15, units = "cm")
+ggsave("pcadapt_urb_pc3.png", p2, width=15, height=15, units = "cm")
 
 #region
 scores$region <- meta.order$region
@@ -205,21 +268,26 @@ p11<-ggplot(scores, aes(x = PC1, y = PC2, color = region, fill = region)) +
   geom_point(shape = 21, size = 2) +
   stat_ellipse(geom = "polygon", alpha = 0.1, color = NA) +stat_ellipse(geom = "path", size = 1)+ 
   scale_color_manual(values = c("Vic"="orange" , "LA" = "purple2",  "SD" = "orchid2")) +
-  scale_fill_manual(values = c("Vic"="orange" , "LA" = "purple2",  "SD" = "orchid2"))+theme_box()
+  scale_fill_manual(values = c("Vic"="orange" , "LA" = "purple2",  "SD" = "orchid2"))+
+  labs(title="A",x = "PC1 (0.093%)", y = "PC2 (0.088%)")+theme_box() + theme(legend.position = "none")
 
 p22<-ggplot(scores, aes(x = PC3, y = PC4, color = region, fill = region)) +
   geom_point(shape = 21, size = 2) +
   stat_ellipse(geom = "polygon", alpha = 0.1, color = NA) + stat_ellipse(geom = "path", size = 1) +
   scale_color_manual(values = c("Vic"="orange" , "LA" = "purple2",  "SD" = "orchid2"))+
-  scale_fill_manual(values = c("Vic"="orange" , "LA" = "purple2",  "SD" = "orchid2")) +theme_box()
+  scale_fill_manual(values = c("Vic"="orange" , "LA" = "purple2",  "SD" = "orchid2")) +
+  labs(title="B",x = "PC3 (0.088%)", y = "PC4 (0.087%)")+theme_box() + theme(legend.position = "none")
+
 p33<-ggplot(scores, aes(x = PC5, y = PC6, color = region, fill = region)) +
   geom_point(shape = 21, size = 2) +
   stat_ellipse(geom = "polygon", alpha = 0.1, color = NA) + stat_ellipse(geom = "path", size = 1)+ 
   scale_color_manual(values = c("Vic"="orange" , "LA" = "purple2",  "SD" = "orchid2")) +
-  scale_fill_manual(values = c("Vic"="orange" , "LA" = "purple2",  "SD" = "orchid2")) +theme_box()
-# Combine the plots in a 1x3 grid
-pca_region<-(p11/p22/p33)
-ggsave("pcadapt_region.png", pca_region, width=30, height=20, units = "cm")
+  scale_fill_manual(values = c("Vic"="orange" , "LA" = "purple2",  "SD" = "orchid2")) +
+  labs(title="C", x = "PC5 (0.087%)", y = "PC6 (0.087%)")+theme_box()
+
+# Combine the plots in a grid
+pca_region<-(p11+p22+p33)
+ggsave("pcadapt_region.png", pca_region, width=40, height=10, units = "cm")
 
 
 #tidal
@@ -229,25 +297,26 @@ a<-ggplot(scores, aes(x = PC1, y = PC2, color = tidal, fill = tidal)) +
   stat_ellipse(geom = "polygon", alpha = 0.1, color = NA) +
   stat_ellipse(geom = "path", size = 1)+
   scale_color_manual(values=c("intertidal"="tan", "subtidal"="darkblue")) + 
-    scale_fill_manual(values=c("intertidal"="tan", "subtidal"="darkblue")) +theme_box()
+    scale_fill_manual(values=c("intertidal"="tan", "subtidal"="darkblue")) +
+  labs(title="A", x = "PC1 (0.093%)", y = "PC2 (0.088%)")+theme_box()+ theme(legend.position = "none")
 
 b<-ggplot(scores, aes(x = PC3, y = PC4, color = tidal, fill = tidal)) +
   geom_point(shape = 21, size = 2) +
   stat_ellipse(geom = "polygon", alpha = 0.1, color = NA) +
   stat_ellipse(geom = "path", size = 1)+
-  scale_color_manual(values=c("intertidal"="tan", "subtidal"="darkblue")) + scale_fill_manual(values=c("intertidal"="tan", "subtidal"="darkblue")) +theme_box()
+  scale_color_manual(values=c("intertidal"="tan", "subtidal"="darkblue")) + scale_fill_manual(values=c("intertidal"="tan", "subtidal"="darkblue")) +
+  labs(title="B", x = "PC3 (0.088%)", y = "PC4 (0.087%)")+ theme_box()+ theme(legend.position = "none")
 
 c<-ggplot(scores, aes(x = PC5, y = PC6, color = tidal, fill = tidal)) +
   geom_point(shape = 21, size = 2) +
   stat_ellipse(geom = "polygon", alpha = 0.1, color = NA) +
   stat_ellipse(geom = "path", size = 1) +
-  scale_color_manual(values=c("intertidal"="tan", "subtidal"="darkblue")) +scale_fill_manual(values=c("intertidal"="tan", "subtidal"="darkblue")) +theme_box()
+  scale_color_manual(values=c("intertidal"="tan", "subtidal"="darkblue")) +scale_fill_manual(values=c("intertidal"="tan", "subtidal"="darkblue")) +
+  labs(title="C", x = "PC5 (0.087%)", y = "PC6 (0.087%)")+theme_box()
 # Combine the plots in a 1x3 grid
-pca_tidal<-(a/b/c)
-ggsave("pcadapt_tidal.png", pca_tidal, width=30, height=20, units = "cm")
+pca_tidal<-(a+b+c)
+ggsave("pcadapt_tidal.png", pca_tidal, width=40, height=10, units = "cm")
 
-
-###code doesn't rerun from here #####
 #####identifying outliers & making csv 
 #outlier line, plot manhattan plots-pvalues
 alpha <- 0.1  # Desired FDR level
@@ -346,7 +415,7 @@ summary(my_fst_region$FST) #highest FST is higher than the mean (which is a good
 
 # estimate the SNP outliers for sites... do some trimming
 outlier_region <-OutFLANK(my_fst_region,LeftTrimFraction=0.01,RightTrimFraction=0.01,
-                          NumberOfSamples =3, qthreshold = 0.01, Hmin = 0.05)
+                          NumberOfSamples =3, qthreshold = 0.1, Hmin = 0.05)
 
 OutFLANKResultsPlotter(outlier_region,withOutliers=T,
                        NoCorr=T,Hmin=0.1,binwidth=0.005,
@@ -357,6 +426,24 @@ Pregion <- pOutlierFinderChiSqNoCorr(my_fst_region,Fstbar=outlier_region$FSTNoCo
                                 dfInferred=outlier_region$dfInferred,qthreshold=0.01,Hmin=0.1)
 out_region <- Pregion$OutlierFlag==TRUE #which of the SNPs are outliers?
 table(out_region) #NO OUTLIERS
+
+Pregion$q.right <- p.adjust(Pregion$pvaluesRightTail,method="fdr")
+length(which(Pregion$q.right<0.1)) #0
+
+merged_data_region <- left_join(Pregion, bim_data, by = c("LocusName" = "snp"))
+#trim short contigs
+min_snps <- 400  #all others in the 1000s
+
+merged_data_region <- merged_data_region %>%
+  group_by(V1) %>%
+  filter(n() >= min_snps) %>%
+  ungroup()
+
+##manhattan plot for region-- no outliers so use qvalues? 
+png("region.manhattan_plot.png", width = 1000, height = 400, res = 150)
+fastman(merged_data_region,chr="V1",bp="V4", p="q.right", snp="LocusName", col="blues",
+        genomewideline = -log10(0.1), logp=TRUE, ylab="-log10(qvalue)")
+dev.off() #closes graphics device and writes file
 
 ######tidal height#####
 # run outflank
@@ -432,6 +519,11 @@ Pvic <- pOutlierFinderChiSqNoCorr(my_fst_vic,Fstbar=outlier_vic$FSTNoCorrbar,
 
 Pvic$q.right <- p.adjust(Pvic$pvaluesRightTail,method="fdr")
 length(which(Pvic$q.right<0.1)) #17 outliers
+sigVic<-Pvic[which(Pvic[,"q.right"]<0.1),]
+  
+# Save to CSV
+write.csv(sigVic, "genomicdata/Vic_outliers.csv", row.names = FALSE)
+
 
 merged_data_Vic <- left_join(Pvic, bim_data, by = c("LocusName" = "snp"))
 #trim short contigs
@@ -445,8 +537,9 @@ merged_data_Vic <- merged_data_Vic %>%
 ##for all fastman plots
 ovrlp<-read.csv("genomicdata/overlapping_snps_all.csv", header=TRUE)
 
-png("Vic.manhattan_plot.png", width = 1000, height = 400, res = 150)
-fastman(merged_data_Vic,chr="V1",bp="V4", p="q.right", snp="LocusName", highlight=vic_la_snps, col="blues", col2 = "greys", suggestiveline=1)
+png("Vic.manhattan_plot.png", width = 900, height = 400, res = 150)
+fastman(merged_data_Vic,chr="V1",bp="V4", p="q.right", snp="LocusName", highlight=vic_la_snps, col="blues", col2 = "greys",
+        genomewideline = -log10(0.1), logp=TRUE, ylab="-log10(qvalue)")
 dev.off() #closes graphics device and writes file
 
 #identify outliers, different thresholds used... 
@@ -476,6 +569,12 @@ PLA <- pOutlierFinderChiSqNoCorr(my_fst_LA,Fstbar=outlier_LA$FSTNoCorrbar,
 PLA$q.right <- p.adjust(PLA$pvaluesRightTail,method="fdr")
 length(which(PLA$q.right<0.1)) #2271!
 
+sigLA<-PLA[which(PLA[,"q.right"]<0.1),]
+
+# Save to CSV
+write.csv(sigLA, "genomicdata/LA_outliers.csv", row.names = FALSE)
+
+
 merged_data_LA <- left_join(PLA, bim_data, by = c("LocusName" = "snp"))
 #trim short contigs
 min_snps <- 400  #all others in the 1000s
@@ -486,7 +585,8 @@ merged_data_LA <- merged_data_LA %>%
   ungroup()
 
 png("LA.manhattan_plot.png", width = 1000, height = 400, res = 150)
-fastman(merged_data_LA,chr="V1",bp="V4", p="q.right", snp="LocusName", highlight=ovrlp, col="blues", col2 = "greys", suggestiveline=1)
+fastman(merged_data_LA,chr="V1",bp="V4", p="q.right", snp="LocusName", highlight=ovrlp, col="blues", col2 = "greys",
+        genomewideline = -log10(0.1), logp=TRUE, ylab="-log10(qvalue)")
 dev.off() #closes graphics device and writes file
 
 
@@ -521,6 +621,11 @@ PSD <- pOutlierFinderChiSqNoCorr(my_fst_SD,Fstbar=outlier_SD$FSTNoCorrbar,
 PSD$q.right <- p.adjust(PSD$pvaluesRightTail,method="fdr")
 length(which(PSD$q.right<0.1)) #749
 
+sigSD<-PSD[which(PSD[,"q.right"]<0.1),]
+
+# Save to CSV
+write.csv(sigSD, "genomicdata/SD_outliers.csv", row.names = FALSE)
+
 out_SD <- PSD$OutlierFlag==TRUE #which of the SNPs are outliers?
 table(out_SD)
 
@@ -534,7 +639,8 @@ merged_data_SD <- merged_data_SD %>%
   ungroup()
 
 png("SD.manhattan_plot.png", width = 1000, height = 400, res = 150)
-fastman(merged_data_SD,chr="V1",bp="V4", p="q.right", snp="LocusName",highlight=la_sd_snps, col="blues", col2 = "greys",suggestiveline=1)
+fastman(merged_data_SD,chr="V1",bp="V4", p="q.right", snp="LocusName",highlight=la_sd_snps, col="blues", col2 = "greys",
+        genomewideline = -log10(0.1), logp=TRUE, ylab="-log10(qvalue)")
 dev.off() #closes graphics device and writes file
 
 #identify outliers
@@ -601,8 +707,6 @@ expressionInput1 <- c("pcadapt"=44, "Vic" = 16, "LA" = 1569, "SD" = 417, "Vic&LA
 upset(fromExpression(expressionInput1), order.by="degree",
       matrix.color="purple")
 
-
-###no longer will work I dont think??
 # Intersection of Victoria & LA
 vic_la_snps <- intersect(outflank_Vic_names, outflank_LA_names)
 # Intersection of Victoria & San Diego--none
@@ -617,27 +721,29 @@ overlapping_snps <- data.frame(vic_la_snps, la_sd_snps)
 write.csv(overlapping_snps, "genomicdata/overlapping_snps.csv", row.names = FALSE)
 
 
-
 ###Polygenic scores- RB####
+#set up for all code below
 phen <- as.numeric(as.factor(meta.order$Dev))
 ##Read imputed genotypes
 imp.g <- read.table("genomicdata/7.urbanurchfull.new.lfmm_imputed.lfmm",sep=" ")
 
-###Run LFMM on all samples
+###Run LFMM on all samples####
 lfmm <- lfmm2(input=as.matrix(imp.g),
               env=as.matrix(phen),
               K=2,
-              effect.sizes=T)
+              effect.sizes=TRUE)
 pv <- lfmm2.test(object=lfmm,
                  input=as.matrix(imp.g),
                  env=as.matrix(phen),
-                 linear=T,genomic.control=T)
+                 linear=TRUE,genomic.control=TRUE)
 plot(-log10(pv$pvalues))
 q.vals <- p.adjust(pv$pvalues,method="fdr")
 length(which(q.vals<0.1)) #no outliers
 
 lfmm.frame <- data.frame(sites, pvalue=pv$pvalues,qvalue=q.vals)
 write.table(lfmm.frame,"ubanurchin.lfmm.results.txt",quote=F,row.names=F)
+
+#####urban/nonurban#####
 n=100
 res.frame <- data.frame(LA.n=NA,
                         LA.u=NA,
@@ -661,20 +767,20 @@ for (i in 1:n) {
   lfmm <- lfmm2(input=as.matrix(train.g),
                 env=as.matrix(train.e),
                 K=2,
-                effect.sizes=T)
+                effect.sizes=TRUE)
   
   
   ## Effect sizes
   b.values <- lfmm@B[,1]
   
   #Prediction
-  pred <- scale(valid.g,scale=F) %*% matrix(b.values)
+  pred <- scale(valid.g,scale=FALSE) %*% matrix(b.values)
   
   frame <- data.frame(Dev=meta.order$Dev[test],
                       Reg=meta.order$region[test],
                       Score=pred)
   
-  agg <- aggregate(frame$Score,list(frame$Dev,frame$Reg),mean,na.rm=T)
+  agg <- aggregate(frame$Score,list(frame$Dev,frame$Reg),mean,na.rm=TRUE)
   res.frame[i,1:6] <- agg$x
   mod <- anova(lm(Score~Dev+Reg, data=frame))
   res.frame[i,7] <- mod$`Pr(>F)`[1]
@@ -684,7 +790,7 @@ gath <- gather(res.frame,"metric","value")
 write.csv(gath,"Polygenic_results.csv")
 
 #How many bootstraps are significant?
-length(which(res.frame$p<0.05))
+length(which(res.frame$p<0.05)) #84 significant
 
 #Make boxplot
 gath.format <- gath %>% filter(metric!="p") %>% 
@@ -693,10 +799,9 @@ gath.format <- gath %>% filter(metric!="p") %>%
                        Dev=="u"~"urban"))
 ggplot(gath.format,aes(x=Region,y=value,fill=Dev)) + 
   geom_boxplot() + theme_bw() +
-  ylab("Polygenic Score") + scale_fill_viridis(discrete=T,begin=0.3,end=0.7)
+  ylab("Polygenic Score")
 
-
-
+#####null####
 ###Null for polygenic scores using randomized environment 
 
 n=100
@@ -749,20 +854,102 @@ gath <- gather(res.frame,"metric","value")
 write.csv(gath,"Polygenic_randomizations.csv")
 
 
+###one region vs all####
+##use one region to predict other regions urban/nonurban?
 
-#Make polygenic boxplot ####
+la<- which(meta.order$region == "LA")
+sd <-which(meta.order$region == "SD")
+vic <- which(meta.order$region == "Vic")
+  
+#testersz
+vic_sd <- which(meta.order$region %in% c("Vic", "SD"))
+vic_la <- which(meta.order$region %in% c("Vic", "LA"))
+sd_la <- which(meta.order$region %in% c("SD", "LA"))
 
+##start here and change accordingly
+#training
+train <- sample(la, size = length(la))
+#testing
+test <- vic_sd
+  
+train.g <- imp.g[train, ]
+train.e <- phen[train]
+valid.g <- imp.g[test, ]
+valid.e <- phen[test]
+
+  
+##Run LFMM
+lfmm <- lfmm2(input=as.matrix(train.g),
+                env=as.matrix(train.e),
+                K=2,
+                effect.sizes=TRUE)
+  
+  
+## Effect sizes
+b.values <- lfmm@B[,1]
+  
+##Prediction
+pred <- scale(valid.g,scale=FALSE) %*% matrix(b.values)
+  
+frame <- data.frame(Dev=meta.order$Dev[test],
+                      Reg=meta.order$region[test],
+                      Score=pred)
+  
+anova(lm(Score ~ Dev *Reg, data = frame)) #look at dev, region and the interaction
+
+
+#####LA vs all####
+#Make boxplot
+p.LA<-
+ggplot(frame, aes(x = Reg, y = Score, fill = Dev)) + 
+  geom_boxplot() + 
+  theme_box() + 
+  theme(legend.position = "none") +
+  labs(title="A. Los Angeles") +
+  ylab("Polygenic Score") +
+  scale_fill_manual(values = c("nonurban"="#99d1ec", "urban"="#665d4b"))
+
+#####SD vs all####
+#Make boxplot
+p.SD<-
+  ggplot(frame, aes(x = Reg, y = Score, fill = Dev)) + 
+  geom_boxplot() + 
+  theme_box() + 
+  theme(legend.position = "none") +
+    labs(title="B. San Diego") +
+  ylab("Polygenic Score") +
+  scale_fill_manual(values = c("nonurban"="#99d1ec", "urban"="#665d4b"))
+
+#####Vic vs all####
+p.vic<-
+  ggplot(frame, aes(x = Reg, y = Score, fill = Dev)) + 
+  geom_boxplot() + 
+  theme_box() + 
+  theme(legend.position = "right") +
+  labs(title="C. Victoria, B.C.") +
+  ylab("Polygenic Score") +
+  scale_fill_manual(values = c("nonurban"="#99d1ec", "urban"="#665d4b"))
+
+# Combine the plots in a grid####
+one_vs_all<-(p.LA+p.SD+p.vic)
+ggsave("PGS_onevall.png", one_vs_all, width=40, height=10, units = "cm")
+
+
+##plots only#####
+#Make polygenic boxplot from saved csvs #
 ##if data was totally random and not driven by urban/nonurban
 gath<- read.csv("genomicdata/Polygenic_randomizations.csv")
 gath.format <- gath %>% filter(metric!="p") %>% 
   separate(metric,into=c("Region","Dev"),sep="\\.") %>%
   mutate(Dev=case_when(Dev=="n"~"nonurban",
                        Dev=="u"~"urban"))
-#p1<-
+p1<-
   ggplot(gath.format,aes(x=Region,y=value,fill=Dev)) + 
-  geom_boxplot() + theme_box() +
-  ylab("Polygenic Score") +ggtitle("Random Grouping") + scale_fill_manual(values = c("nonurban"="orchid2" ,"urban" = "tan"))
-#ggsave("polygenic_random.png", p1, width=25, height=20, units = "cm")
+  geom_boxplot() + theme_box()+
+  ylab("Polygenic Score") +ggtitle("Random Grouping") + scale_fill_manual(values = c("urban"="orchid2" ,"nonurban" = "tan"),
+                                                                          name="Groups",labels=c("Group 1", "Group 2"))
+
+ggsave("polygenic_random.png", p1, width=15, height=15, units = "cm")
 
 #driven by urban/nonurban
 nonrandom<- read.csv("genomicdata/Polygenic_results.csv")
@@ -770,8 +957,8 @@ nonrandom.format <- nonrandom %>% filter(metric!="p") %>%
   separate(metric,into=c("Region","Dev"),sep="\\.") %>%
   mutate(Dev=case_when(Dev=="n"~"nonurban",
                        Dev=="u"~"urban"))
-p2<-
+poly2<-
 ggplot(nonrandom.format,aes(x=Region,y=value,fill=Dev)) + 
-  geom_boxplot() + theme_box() +
-  ylab("Polygenic Score") +ggtitle("D")+ scale_fill_manual(values = c("nonurban"="#99d1ec" ,"urban" = "#665d4b"))
-ggsave("polygenic_nonrandom.png", p2, width=20, height=15, units = "cm")
+  geom_boxplot() + theme_box() + theme(legend.position = "none") +
+  ylab("Polygenic Score") +ggtitle("")+ scale_fill_manual(values = c("nonurban"="#99d1ec" ,"urban" = "#665d4b"))
+ggsave("polygenic_nonrandom.png", poly2, width=15, height=15, units = "cm")

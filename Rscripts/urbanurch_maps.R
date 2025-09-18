@@ -11,6 +11,13 @@ library(patchwork)
 #https://eriqande.github.io/rep-res-web/lectures/making-maps-with-R.html
 setwd("~/Desktop/urbanurchins")
 
+#figure theme to keep things consistent
+theme_bigbox <- function(base_size = 11, base_family = '') {
+  theme_classic() %+replace% 
+    theme(text = element_text(size = 20), 
+          panel.border = element_rect(color = "white", fill = NA, size = 1)) 
+}
+
 
 #Mussel watch sites####
 M<-read.csv("musselwatch/musselwatch.csv", header=TRUE, sep=",")
@@ -72,7 +79,7 @@ states <- cbind(states, st_coordinates(st_centroid(states)))
 states$ID <- toTitleCase(states$ID)
 head(states)
 ##just map##
-map<-
+#map<-
   ggplot(data = world) +
   theme_bw() + 
   geom_sf(data = world_crop, fill = 'antiquewhite1') +
@@ -87,9 +94,9 @@ ggsave("map_only.png", map, width=30, height=30, units = "cm")
 three<-read.csv("3sites.csv", header=TRUE, sep=",")
 three<-three %>% 
     unite(dev_region, c(region, dev), sep="_", remove=FALSE)
-#sites3<-
+sites3<-
 ggplot(data = world) +
-    theme_bw() + 
+  theme_bigbox() + 
     geom_sf(data = world_crop, fill = 'antiquewhite1') +
     geom_sf(data = states, fill = 'antiquewhite1') +
     geom_point(data = three, aes(x=long, y=lat, color=dev, size=5)) +
@@ -97,57 +104,65 @@ ggplot(data = world) +
                     #size = 10, nudge_x = c(-1.25,1.25),fontface = "bold")+
     coord_sf(xlim = c(-127, -112), ylim = c(32, 49), expand = FALSE) + ##FIT TO REGION OF INTEREST
   scale_color_manual(values = c("nonurban"="#99d1ec" ,"urban" = "#665d4b"))+ 
-    theme(plot.title = element_text(size = 24), panel.grid.major = element_line(color = gray(0.5), linetype = "dashed", size = 0.5),
-          panel.background = element_rect(fill = "aliceblue"), legend.position = 'right')
+  labs(x = "Longitude", y = "Latitude") +
+    theme(plot.title = element_text(size = 12), panel.grid.major = element_line(color = gray(0.5), linetype = "dashed", size = 0.5),
+          panel.background = element_rect(fill = "aliceblue"), legend.position = 'none')+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ggsave("map_3_notext.png", sites3, width=30, height=30, units = "cm")
-
-##everything
-all<-ggplot(data = world) +
-  theme_bw() + 
-  geom_sf(data = world_crop, fill = 'antiquewhite1') +
-  geom_sf(data = states, fill = 'antiquewhite1') +
-  geom_point(data = sites19, aes(x=Longitude, y=Latitude, color=Dev, size=2)) +
-  geom_text_repel(data = sites19, aes(x = Longitude, y = Latitude, label = Site_ID),
-                  size = 10, nudge_x = c(-1.25,1.25),fontface = "bold")+
-  coord_sf(xlim = c(-127, -112), ylim = c(32, 49), expand = FALSE) + ##FIT TO REGION OF INTEREST
-  scale_color_manual(values = c("nonurban"="#99d1ec" ,"urban" = "#665d4b"))+  theme(plot.title = element_text(size = 24), panel.grid.major = element_line(color = gray(0.5), linetype = "dashed", size = 0.5),
-        panel.background = element_rect(fill = "aliceblue"), legend.position = 'right')
-
-ggsave("map_all.png", all, width=30, height=30, units = "cm")
 
 ##zoom on Vic
 V<-
 ggplot(data = world) +
-  theme_bw() + 
+  theme_bigbox() + 
   geom_sf(data = world_crop, fill = 'antiquewhite1') +
   geom_sf(data = world, fill = 'antiquewhite1') +
   geom_point(data = Viconly, aes(x=Longitude, y=Latitude, color=Dev, size=5)) +
   coord_sf(xlim = c(-125, -122), ylim = c(47.5, 49), expand = FALSE) + ##FIT TO REGION OF INTEREST
-  scale_color_manual(values = c("nonurban"="#99d1ec" ,"urban" = "#665d4b"))+   theme(plot.title = element_text(size = 24), panel.grid.major = element_line(color = gray(0.5), linetype = "dashed", size = 0.5),
-                                                                                       panel.background = element_rect(fill = "aliceblue"), ,legend.position="none")
-
+  scale_color_manual(values = c("nonurban"="#99d1ec" ,"urban" = "#665d4b"))+   theme(plot.title = element_text(size = 12), panel.grid.major = element_line(color = gray(0.5), linetype = "dashed", size = 0.5),
+                                                                                       panel.background = element_rect(fill = "aliceblue"), ,legend.position="none")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ##zoom on LA
 L<-
   ggplot(data = world) +
-  theme_bw() + 
+  theme_bigbox() + 
   geom_sf(data = world_crop, fill = 'antiquewhite1') +
-  geom_sf(data = states, fill = 'antiquewhite1') +
+  geom_sf(data = world, fill = 'antiquewhite1') +
   geom_point(data = LAonly, aes(x=Longitude, y=Latitude, color=Dev, size=5)) +
   coord_sf(xlim = c(-118.5, -117.5), ylim = c(33.5, 34), expand = FALSE) + ##FIT TO REGION OF INTEREST
-  scale_color_manual(values = c("nonurban"="#99d1ec" ,"urban" = "#665d4b"))+  theme(plot.title = element_text(size = 24), panel.grid.major = element_line(color = gray(0.5), linetype = "dashed", size = 0.5), panel.background = element_rect(fill = "aliceblue"), ,legend.position="none")
+  scale_color_manual(values = c("nonurban"="#99d1ec" ,"urban" = "#665d4b"))+  theme(plot.title = element_text(size = 12), panel.grid.major = element_line(color = gray(0.5), linetype = "dashed", size = 0.5), panel.background = element_rect(fill = "aliceblue"), ,legend.position="none")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ## zoom on SD                                                                                                                                                                           
 S<-
 ggplot(data = world) +
-  theme_bw() + 
+  theme_bigbox() + 
   geom_sf(data = world_crop, fill = 'antiquewhite1') +
-  geom_sf(data = states, fill = 'antiquewhite1') +
+  geom_sf(data = world, fill = 'antiquewhite1') +
   geom_point(data = SDonly, aes(x=Longitude, y=Latitude, color=Dev, size=5)) +
   coord_sf(xlim = c(-118, -117), ylim = c(32.6, 33.1), expand = FALSE) + ##FIT TO REGION OF INTEREST
-  scale_color_manual(values = c("nonurban"="#99d1ec" ,"urban" = "#665d4b"))+   theme(plot.title = element_text(size = 24), panel.grid.major = element_line(color = gray(0.5), linetype = "dashed", size = 0.5),
-                                                                                      panel.background = element_rect(fill = "aliceblue"),legend.position="none")
+  scale_color_manual(values = c("nonurban"="#99d1ec" ,"urban" = "#665d4b"))+   theme(plot.title = element_text(size = 12), panel.grid.major = element_line(color = gray(0.5), linetype = "dashed", size = 0.5),
+                                                                                      panel.background = element_rect(fill = "aliceblue"),legend.position="none")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 mini_maps<-(V/L/S)
-
 ggsave("maps_mini.png", mini_maps, width=20, height=40, units = "cm")
 
+##fig 1
+library(cowplot)
+# make a blank plot that can receive a label for structure plot later
+blank_plot <- ggplot() + theme_void() + theme_bigbox() +coord_fixed(ratio = 2) 
+
+fig1 <- plot_grid(
+  sites3,
+  mini_maps,
+  blank_plot,
+  pca +theme(legend.position="none"),
+  ncol = 4,
+  rel_widths = c(1, 1, 0.5, 1),
+  align = "lr",
+  axis = "t",            # top and bottom axes aligned
+  labels = "AUTO",
+  label_size = 30,
+  label_fontface = "plain"
+)
+ggsave("mapsfig1.png", fig1, width=60, height=30, units = "cm")

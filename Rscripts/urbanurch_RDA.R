@@ -115,7 +115,7 @@ plot(urch.rda.L, scaling=3)
 #scaling=3 (also known as “symmetrical scaling”) for the ordination plots. This scales the SNP and individual scores by the square root of the eigenvalues
 text(urch.rda.L, display="bp", scaling=3) 
 
-###CCGP RDA plotting ####
+### RDA plotting ####
 #color by dev, shape by region -- green vs grey; light blue vs brown (urban=gross)
 #this is how my RDA should look
 ggplot(sites.complete,aes(x=RDA1,y=RDA2,color=Dev)) + geom_point(aes(shape=region)) + theme_bw() 
@@ -159,7 +159,7 @@ env_arrows$RDA1_scaled <- env_arrows$RDA1 * env_arrows$cor_strength * base_scale
 env_arrows$RDA2_scaled <- env_arrows$RDA2 * env_arrows$cor_strength * base_scale
 
 ##more informative labels
-env_arrows$Label <- c("Urban", "Depth")  # Example custom labels
+env_arrows$Label <- c("Urban", "Tidal Height")  # Example custom labels
 
 ubanRDA<-
   ggplot() +
@@ -175,11 +175,9 @@ ubanRDA<-
             color = "black", size = 5)+
   scale_shape_manual(values=c("LA"=21, "SD"=22, "Vic"=24))+
   scale_fill_manual(values=c("urban"="#665d4b", "nonurban"="#99d1ec")) +
-  theme_box() +
+  theme_box() + theme(legend.position = "none") +
   coord_equal() +
-  labs(x = "RDA1", y = "RDA2", title = "RDA") +
-  theme(legend.position = "right")
+  labs(x = "RDA1", y = "RDA2", title = "") 
 
-
-ggsave("RDA.urb.png", ubanRDA, width=20, height=15, units = "cm")
+ggsave("RDA.urb.png", ubanRDA, width=15, height=15, units = "cm")
 
