@@ -204,7 +204,88 @@ segments(
   lwd = 2)
 dev.off() #closes graphics device and writes file
 
-##stats for PC axes###
+###outflank urban vs sliding window overlap####
+##Purb = urban outflank, urb_w= sliding window urban dataset
+
+#separate chr/bp position in Purb
+Purb.fixed<- Purb %>% 
+  separate(LocusName, into= c("chr", "bp_position"), sep=".1_")
+
+#get rid of small scaffolds
+Purb.fixed <- Purb.fixed %>%
+  group_by(chr) %>%
+  filter(n() >= min_snps) %>%
+  drop_na(pvalues) %>% 
+  ungroup()
+
+out_urb.fixed<-Purb.fixed$OutlierFlag==TRUE
+table(out_urb.fixed) #163 outliers
+
+urb_w.fixed<- urb_w %>% 
+  separate(chr, into= c("chr", "version"), sep="\\.") ##now chr columns match yay!
+
+urb_w.fixed$sig_window =urb_w.fixed$P<0.009982191 ##add column for sig_windows
+urb_window<-urb_w.fixed$sig_window==TRUE
+table(urb_window) #53 outliers
+
+##save only sig windows 
+urb_w.fixed.sig<-urb_w.fixed %>% 
+  dplyr::filter(sig_window ==TRUE)
+
+##loop to see what outflank outliers fall into sig SNP windows
+Purb.fixed$in_window <- FALSE #start with NAs here for testing purposes
+
+sig.window.hits <- data.frame(chr=character(), window.no=numeric(), start=numeric(), end=numeric(), spot=numeric())
+#in specific scaffold
+for (scaffold in unique(Purb.fixed$chr)){
+  
+  snp_rows <- which(Purb.fixed$chr == scaffold)
+  #specific windows 
+  scaffold_windows <- urb_w.fixed.sig %>% 
+    filter(chr==scaffold) 
+  
+  if (nrow(scaffold_windows)==0) {
+    next
+  }
+  
+  #loop SNPs
+  for (SNP in snp_rows) {
+    snp_pos <- as.integer(Purb.fixed$bp_position[SNP])
+    Purb.fixed$in_window[SNP] <-FALSE
+    
+  for (window in 1:nrow(scaffold_windows)){
+    window_start <- scaffold_windows$start_bp[window]
+    window_end <- scaffold_windows$end_bp[window] 
+    
+    if (snp_pos>=window_start && snp_pos<=window_end){
+      Purb.fixed$in_window[SNP] <- TRUE 
+      newrow<-data.frame(chr=scaffold, window.no=window, start=window_start, end=window_end, spot=snp_pos)
+      sig.window.hits <- rbind(sig.window.hits, newrow)
+      break }
+      }
+    }
+}
+
+##next run Fischer test to look at overlap & test if overlap is more than expected    
+Purb.fixed %>%
+  summarize(
+    both_true  = sum(OutlierFlag & in_window),
+    only_outlier = sum(OutlierFlag & !in_window),
+    only_window= sum(!OutlierFlag & in_window),
+    both_false = sum(!OutlierFlag & !in_window)
+  )
+
+#make matrix
+both_true<-5
+only_outlier<-158
+only_window<- 4973
+both_false <-200693
+
+urch.matrix<-matrix(c(both_true, only_outlier, only_window, both_false), nrow=2, ncol=2)
+fisher.test(urch.matrix) #not sig, so matches expectations of small effect loci 
+#windows are not being driven by SNP outliers... needs both! parallelism
+
+##stats for PC axes####
 pcdata<-cbind(meta.order, pcadapt$scores)
 head(pcdata)
 #PC1 not sig
@@ -476,11 +557,11 @@ table(out_tidal) #193 outliers...?
 #urban vs nonurban
 my_fst_urb <- MakeDiploidFSTMat(genos.filt, locusNames = pcframe.filt$snp, popNames = meta.order$Dev)
 
-outlier_urb <-OutFLANK(my_fst_urb,LeftTrimFraction=0.01,RightTrimFraction=0.01,
-                   NumberOfSamples =length(table(meta.order$Site_ID)), qthreshold = 0.01, Hmin = 0.05)
+outlier_urb <-OutFLANK(my_fst_urb, LeftTrimFraction=0.01,RightTrimFraction=0.01,
+                   NumberOfSamples= 2, qthreshold = 0.01, Hmin = 0.05)
 
 OutFLANKResultsPlotter(outlier_urb,withOutliers=TRUE,
-                       NoCorr=T,Hmin=0.1,binwidth=0.005,
+                       NoCorr=TRUE,Hmin=0.1,binwidth=0.005,
                        Zoom=F,RightZoomFraction=0.05,titletext=NULL)
 #how many are outliers
 Purb <- pOutlierFinderChiSqNoCorr(my_fst_urb,Fstbar=outlier_urb$FSTNoCorrbar,
@@ -490,10 +571,30 @@ length(which(Purb$q.right<0.1))
 out_urb <- Purb$OutlierFlag==TRUE #which of the SNPs are outliers?
 table(out_urb) #165 outliers!!!
 
+merged_data_urb <- left_join(Purb, bim_data, by = c("LocusName" = "snp"))
+#trim short contigs
+min_snps <- 400  #all others in the 1000s
+
+merged_data_urb <- merged_data_urb %>%
+  group_by(V1) %>%
+  filter(n() >= min_snps) %>%
+  ungroup()
+
+#remove locus name labels...
+tmp <- merged_data_urb
+tmp$LocusName <- "" 
+
+png("urb.manhattan_plot.png", width = 1000, height = 400, res = 150)
+fastman(tmp,chr="V1",bp="V4", p="q.right", snp= "LocusName", annotatePval=-log10(0.01), annotateTop=1,
+        col=c("#665D4B","#665D4B"),col2="blues",  colAbovePval = TRUE, suggestiveline = -log10(0.01), ylab="-log10(pvalue)")
+dev.off() #closes graphics device and writes file
+
+
 #identify outliers, different thresholds used... pcadapt was 0.1?
 outflank_outliers_urb <- subset(Purb, OutlierFlag==TRUE)
 write.csv(outflank_outliers_urb, "genomicdata/outflank_urb_outliers.csv")
 
+write.csv(Purb, "genomicdata/outflank_urb_allSNPs.csv")
 #####look at urban/nonurban for specific regions? #####
 #subset Vic, SD and LA into separate datasets then make the urban/nonurban comparison to test this... maybe later?
 
