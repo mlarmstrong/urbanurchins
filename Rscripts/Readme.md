@@ -4,5 +4,6 @@ This folder contains all R scripts for analyzing population genomic data for thi
 * urbanurch_thinning.R = script for visualization of nonthinned genomic data to interpret how it should be thinned for population structure analyses
 * urbanurch_popstructure.R = script for analyzing and visualizing population structure with thinned dataset
 * urbanurch_outliers.R = script for analyzing full SNP dataset for several outlier analyses
+* urbanurch_windows.R = script for analyzing full SNP dataset using outlier windows
 * urbanurch_RDA.R = script for conducting the redundancy analysis
 * Polygen.R = script for conducting the polygenic score test 
