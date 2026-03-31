@@ -1063,3 +1063,19 @@ ggplot(nonrandom.format,aes(x=Region,y=value,fill=Dev)) +
   geom_boxplot() + theme_box() + theme(legend.position = "none") +
   ylab("Polygenic Score") +ggtitle("")+ scale_fill_manual(values = c("nonurban"="#99d1ec" ,"urban" = "#665d4b"))
 ggsave("polygenic_nonrandom.png", poly2, width=15, height=15, units = "cm")
+
+
+##downsampling: read in data
+
+downsampled<-read.csv("Polygenic_results_downsample.csv")
+
+downsampled.format <- downsampled %>% filter(metric!="p") %>% 
+  separate(metric,into=c("Region","Dev"),sep="\\.") %>%
+  mutate(Dev=case_when(Dev=="n"~"nonurban",
+                       Dev=="u"~"urban"))
+
+dsamp<-ggplot(downsampled.format,aes(x=Region,y=value,fill=Dev)) + 
+  geom_boxplot() + theme_box() + theme(legend.position = "right") +
+  ylab("Polygenic Score") +ggtitle("")+ scale_fill_manual(values = c("nonurban"="#99d1ec" ,"urban" = "#665d4b"))
+ggsave("downsampled.png", dsamp, width=15, height=15, units = "cm")
+

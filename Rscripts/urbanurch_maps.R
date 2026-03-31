@@ -7,6 +7,15 @@ library(sf)
 library(ggmap)
 library(maps)
 library(patchwork)
+library(ggrepel)
+library(ggspatial)
+library(leaflet)
+library(tools)
+library(rnaturalearth)
+library(forcats)
+library(lubridate)
+library(tidyr)
+#################
 
 #https://eriqande.github.io/rep-res-web/lectures/making-maps-with-R.html
 setwd("~/Desktop/urbanurchins")
@@ -20,29 +29,29 @@ theme_bigbox <- function(base_size = 11, base_family = '') {
 
 
 #Mussel watch sites####
-M<-read.csv("musselwatch/musselwatch.csv", header=TRUE, sep=",")
+M<-read.csv("preliminary_work/musselwatch/musselwatch.csv", header=TRUE, sep=",")
+
+#just sites relevant to my dataset
+MWS_data<-read.csv("MWS_waste_storm.csv", header=TRUE, sep=",")
+
+#MW station rank
+station_rankMWS<-read.csv("musselwatch_stationrank.csv",header=TRUE, sep=",")
+
+##all treatment plant data
+treatment_plants<-read.csv("treatmentplants_latlong.csv", header=TRUE, sep=",")
+
+vic_plant<-treatment_plants %>% 
+  filter(Region=="Vic")
+
+##only MWS near my sites
+scb_mws<-read.csv("Musselwatch_scbstations.csv", header=TRUE, sep=",")
+#make variables continuous for plotting
+scb_mws$AP <- as.numeric(scb_mws$AP)
 
 ##Historical Exposure Sites ####
 #subset only Twin Points, Treasure Island, Cabrillo and White Pt
 HS<-read.csv("ch2_sites.csv", header=TRUE, sep=",")
-
-
-
-# set wd
-# packages
-library(sf)
-library(dplyr)
-library(ggrepel)
-library(ggspatial)
-library(leaflet)
-library(ggplot2)
-library(maps) 
-library(tools)
-library(rnaturalearth)
-library(forcats)
-library(lubridate)
-library(tidyr)
-##################
+#
 
 # read in our site data
 #######################
@@ -54,6 +63,8 @@ sites19<-sites[!duplicated(sites$Site),]
 LAonly<-sites19[ which(sites19$region=='LA'),]
 SDonly<-sites19[ which(sites19$region=='SD'),]
 Viconly<-sites19[ which(sites19$region=='Vic'),]
+
+SCB<-sites19[ which(sites19$region=='LA' | sites19$region=='SD'),]
 #######################
 
 # create maps
@@ -94,7 +105,7 @@ ggsave("map_only.png", map, width=30, height=30, units = "cm")
 three<-read.csv("3sites.csv", header=TRUE, sep=",")
 three<-three %>% 
     unite(dev_region, c(region, dev), sep="_", remove=FALSE)
-sites3<-
+#sites3<-
 ggplot(data = world) +
   theme_bigbox() + 
     geom_sf(data = world_crop, fill = 'antiquewhite1') +
@@ -112,7 +123,7 @@ ggplot(data = world) +
 ggsave("map_3_notext.png", sites3, width=30, height=30, units = "cm")
 
 ##zoom on Vic
-V<-
+#V<-
 ggplot(data = world) +
   theme_bigbox() + 
   geom_sf(data = world_crop, fill = 'antiquewhite1') +
@@ -123,7 +134,7 @@ ggplot(data = world) +
                                                                                        panel.background = element_rect(fill = "aliceblue"), ,legend.position="none")+
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ##zoom on LA
-L<-
+#L<-
   ggplot(data = world) +
   theme_bigbox() + 
   geom_sf(data = world_crop, fill = 'antiquewhite1') +
@@ -134,7 +145,7 @@ L<-
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ## zoom on SD                                                                                                                                                                           
-S<-
+#S<-
 ggplot(data = world) +
   theme_bigbox() + 
   geom_sf(data = world_crop, fill = 'antiquewhite1') +
@@ -166,3 +177,74 @@ fig1 <- plot_grid(
   label_fontface = "plain"
 )
 ggsave("mapsfig1.png", fig1, width=60, height=30, units = "cm")
+
+
+##LA and SD data
+ggplot(data = world) +
+  theme_bigbox() + 
+  geom_sf(data = world_crop, fill = 'antiquewhite1') +
+  geom_sf(data = world, fill = 'antiquewhite1') +
+  geom_point(data = SCB, aes(x=Longitude, y=Latitude, color=Dev, size=5)) +
+  coord_sf(xlim = c(-118.5, -117), ylim = c(32.6, 34), expand = FALSE) + ##FIT TO REGION OF INTEREST
+  scale_color_manual(values = c("nonurban"="#99d1ec" ,"urban" = "#665d4b"))+   theme(plot.title = element_text(size = 12), panel.grid.major = element_line(color = gray(0.5), linetype = "dashed", size = 0.5),
+                                                                                     panel.background = element_rect(fill = "aliceblue"),legend.position="none")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))                                                                                     
+
+##add my sites + X's for Mussel Watch Sites
+suppmap<-ggplot(data = world) +
+  theme_bigbox() + 
+  geom_sf(data = world_crop, fill = 'antiquewhite1') +
+  geom_sf(data = world, fill = 'antiquewhite1') +
+  geom_point(data = SCB, aes(x=Longitude, y=Latitude, size=3,color= Dev)) +
+  coord_sf(xlim = c(-118.5, -117), ylim = c(32.6, 34), expand = FALSE) + ##FIT TO REGION OF INTEREST
+  scale_color_manual(values = c("nonurban"="#99d1ec" , "urban" = "#665d4b"))+   
+  geom_point(shape=4, data = MWS_data, aes(x=MWS.Long, y=MWS.Lat, size=3))+
+  theme(plot.title = element_text(size = 12), panel.grid.major = element_line(color = gray(0.5), linetype = "dashed", size = 0.5),
+        panel.background = element_rect(fill = "aliceblue"),legend.position="none")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))    
+
+ggsave("suppmap_MWS.png", suppmap, width=20, height=20, units = "cm")
+
+###old maps ####
+##add musselwatch points & shapes for sewage vs stormwater vs both vs none?
+ggplot(data = world) +
+  theme_bigbox() + 
+  geom_sf(data = world_crop, fill = 'antiquewhite1') +
+  geom_sf(data = world, fill = 'antiquewhite1') +
+  geom_point(data = MWS_data, aes(x=MWS.Long, y=MWS.Lat, size=3,color=Urban, shape=MWS.exposure)) +
+  coord_sf(xlim = c(-118.5, -117), ylim = c(32.6, 34), expand = FALSE) + ##FIT TO REGION OF INTEREST
+  scale_shape_manual(values=c("wastewater"=17, "stormwater only"=15))+ #triangle for wastewater
+  scale_color_manual(values = c("nonurban"="#99d1ec" , "urban" = "#665d4b"))+   
+  geom_point(shape=4, data = MWS_data, aes(x=wastewater.plant.Longitude, y=wastewater.plant.Latitude, size=3))+
+  theme(plot.title = element_text(size = 12), panel.grid.major = element_line(color = gray(0.5), linetype = "dashed", size = 0.5),
+                                                                                     panel.background = element_rect(fill = "aliceblue"),legend.position="none")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))    
+
+
+#vic treatment plant map
+#V<-
+ggplot(data = world) +
+  theme_bigbox() + 
+  geom_sf(data = world_crop, fill = 'antiquewhite1') +
+  geom_sf(data = world, fill = 'antiquewhite1') +
+  geom_point(data = Viconly, aes(x=Longitude, y=Latitude, color=Dev, size=3)) +
+  coord_sf(xlim = c(-125, -122), ylim = c(47.5, 49), expand = FALSE) + ##FIT TO REGION OF INTEREST
+  scale_color_manual(values = c("nonurban"="#99d1ec" ,"urban" = "#665d4b"))+   
+  geom_point(shape=4, data = vic_plant, aes(x=wastewater.plant.Longitude, y=wastewater.plant.Latitude, size=3))+
+  theme(plot.title = element_text(size = 12), panel.grid.major = element_line(color = gray(0.5), linetype = "dashed", size = 0.5),
+                                                                                     panel.background = element_rect(fill = "aliceblue"), ,legend.position="none")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+###ranking of mussel watch sites
+
+ggplot(data = world) +
+  theme_bigbox() + 
+  geom_sf(data = world_crop, fill = 'antiquewhite1') +
+  geom_sf(data = world, fill = 'antiquewhite1') +
+  geom_point(shape=20, data = scb_mws, aes(x=long, y=lat, size=3, color= AP)) +
+  coord_sf(xlim = c(-118.5, -117), ylim = c(32.6, 34), expand = FALSE) + ##FIT TO REGION OF INTEREST
+  geom_point( data = SCB, aes(x=Longitude, y=Latitude, size=3, shape=Dev))+
+  scale_shape_manual(values = c("nonurban"= 3, "urban" = 4))+   
+  theme(plot.title = element_text(size = 12), panel.grid.major = element_line(color = gray(0.5), linetype = "dashed", size = 0.5),
+        panel.background = element_rect(fill = "aliceblue"))+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))    
